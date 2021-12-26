@@ -12,7 +12,7 @@
                 </li>
                 <li class="nav-devider"></li>
                 <li>
-                    <a class="waves-effect waves-dark" href="{{route('supervisors.index)}}" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">supervisors</span></a>
+                    <a class="waves-effect waves-dark" href="{{route('supervisors.index')}}" aria-expanded="false"><i class="mdi mdi-account"></i><span class="hide-menu">supervisors</span></a>
                 </li>
 {{--                <li>--}}
 {{--                    <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-widgets"></i><span class="hide-menu">categories</span></a>--}}

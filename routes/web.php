@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupervisorsController;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Supervisor\SupervisorHomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,15 +15,27 @@ use App\Http\Controllers\Admin\SupervisorsController;
 |
 */
 
+// route for landing page but now for redirect to login ...
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(\route('login'));
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
 
-//admin crud
-Route::resource('supervisors', SupervisorsController::class);
+
+//admin
+Route::group(['middleware' => ['auth:web']], function() {
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    //supervisor crud by admin tasks
+    Route::resource('supervisors', SupervisorsController::class);
+    Route::post('supervisors/change_status', [SupervisorsController::class,'change_status'])->name('supervisor.change_status');
+});
+
+//supervisor
+Route::group(['middleware' => ['auth:supervisor']], function() {
+    Route::get('/supervisor/home', [SupervisorHomeController::class, 'index'])->name('supervisor.home');
+    //supervisor crud by admin tasks
+//    Route::resource('supervisors', SupervisorHomeController::class);
+//    Route::post('supervisors/change_status', [SupervisorHomeController::class,'change_status'])->name('supervisor.change_status');
+});
 
 require __DIR__.'/auth.php';

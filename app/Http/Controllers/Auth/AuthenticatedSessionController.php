@@ -28,11 +28,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+       //manual login
+        if (auth::guard('web')->attempt(['email' => Request('email'), 'password' => Request('password')], null)) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }elseif (auth::guard('supervisor')->attempt(['email' => Request('email'), 'password' => Request('password')], null)){
+            return redirect(route('supervisor.home'));
+        }
 
-        $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+       //system functions
+//        $request->authenticate();
+//        $request->session()->regenerate();
+//        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
@@ -43,12 +50,16 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        if(Auth::guard('web')->check()){
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/');
+        }elseif(Auth::guard('supervisor')->check()){
+            Auth::guard('supervisor')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/');
+        }
     }
 }

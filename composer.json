@@ -12,9 +12,8 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "realrashid/sweet-alert": "^4.1",
-        "yajra/laravel-datatables": "^1.5"
-
-
+        "yajra/laravel-datatables": "^1.5",
+        "yajra/laravel-datatables-editor": "^1.25"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -30,7 +29,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

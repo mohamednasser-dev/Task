@@ -19,9 +19,10 @@ class SupervisorDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        return datatables()
-            ->eloquent($query)
-            ->addColumn('action', 'supervisor.action');
+        return datatables($query)->setRowId('id')->addColumn('password', '');
+//        return datatables()
+//            ->eloquent($query)
+//            ->addColumn('action', 'supervisor.action');
     }
 
     /**
@@ -32,7 +33,8 @@ class SupervisorDataTable extends DataTable
      */
     public function query(Supervisor $model)
     {
-        return $model->newQuery();
+//        return $model->newQuery();
+        return $model->newQuery()->select('id', 'name', 'email');
     }
 
     /**
@@ -46,14 +48,28 @@ class SupervisorDataTable extends DataTable
                     ->setTableId('supervisor-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->orderBy(1)
-                    ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    );
+
+                ->parameters([
+                    'dom' => 'Bfrtip',
+                    'order' => [1, 'asc'],
+                    'select' => [
+                        'style' => 'os',
+                        'selector' => 'td:first-child',
+                    ],
+                    'buttons' => [
+                        ['extend' => 'create', 'editor' => 'editor'],
+                        ['extend' => 'edit', 'editor' => 'editor'],
+                        ['extend' => 'remove', 'editor' => 'editor'],
+                    ]
+                ]);
+//        ->orderBy(1)
+//                    ->buttons(
+//                        Button::make('create'),
+//                        Button::make('export'),
+//                        Button::make('print'),
+//                        Button::make('reset'),
+//                        Button::make('reload')
+//                    );
     }
 
     /**
@@ -64,11 +80,25 @@ class SupervisorDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            [
+                'data' => null,
+                'defaultContent' => '',
+                'className' => 'select-checkbox',
+                'title' => '',
+                'orderable' => false,
+                'searchable' => false
+            ],
             'id',
             'name',
-            'phone',
-            'email'
+            'email',
         ];
+
+//        return [
+//            'id',
+//            'name',
+//            'phone',
+//            'email'
+//        ];
     }
 
     /**

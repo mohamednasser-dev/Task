@@ -10,4 +10,20 @@ class Product_image extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
+
+    public function getImageAttribute($image)
+    {
+        if (!empty($image)) {
+            return asset('public/uploads/products') . '/' . $image;
+        }
+        return asset('public/uploads/product_images/default.jpg');
+    }
+
+    public function setImageAttribute($image)
+    {
+        if (is_file($image)) {
+            $imageFields = upload($image, 'product_images');
+            $this->attributes['image'] = $imageFields;
+        }
+    }
 }

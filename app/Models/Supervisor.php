@@ -24,4 +24,20 @@ class Supervisor extends Authenticatable
             $this->attributes['password'] = Hash::make($password);
         }
     }
+
+    public function getImageAttribute($image)
+    {
+        if (!empty($image)) {
+            return asset('public/uploads/supervisors') . '/' . $image;
+        }
+        return asset('public/uploads/supervisors/default.jpg');
+    }
+
+    public function setImageAttribute($image)
+    {
+        if (is_file($image)) {
+            $imageFields = upload($image, 'supervisors');
+            $this->attributes['image'] = $imageFields;
+        }
+    }
 }

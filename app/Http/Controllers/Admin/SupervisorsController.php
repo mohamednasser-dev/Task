@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\SupervisorDataTable;
+use App\DataTables\SupervisorDataTableEditor;
 use App\Http\Controllers\Controller;
+use App\Models\Supervisor;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class SupervisorsController extends Controller
 {
@@ -15,7 +18,8 @@ class SupervisorsController extends Controller
      */
     public function index(SupervisorDataTable $dataTable)
     {
-        return $dataTable->render('admin.supervisor.index');
+        $data = Supervisor::orderBy('created_at','desc')->paginate(10);
+        return view('admin.supervisor.index',compact('data'));
     }
 
     /**
@@ -23,9 +27,10 @@ class SupervisorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function change_status(Request $request)
     {
-        //
+        Supervisor::findorFail($request->id)->update(['status'=>$request->status]);
+        return 1;
     }
 
     /**
@@ -36,7 +41,18 @@ class SupervisorsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->validate(\request(),
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|unique:supervisors,email|email:rfc,dns',
+                'password' => 'required|min:6|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|confirmed',
+                'phone' => 'required|unique:supervisors,phone',
+                'image' => 'required|mimes:jpeg,jpg,png|max:10000' // max 10000kb
+            ]);
+
+        Supervisor::create($data);
+        Alert::success('added', 'supervisor added successfully');
+        return back();
     }
 
     /**
@@ -81,6 +97,8 @@ class SupervisorsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Supervisor::findOrFail($id)->delete();
+        Alert::success('deleted', 'supervisor deleted successfully');
+        return back();
     }
 }

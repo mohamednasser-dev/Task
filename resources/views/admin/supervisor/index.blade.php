@@ -23,9 +23,13 @@
             <div class="card">
                 <div class="card-body">
                     This is admin dashboard
+                    {!! $dataTable->table(); !!}
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('script')
+    {!! $dataTable->scripts(); !!}
 @endsection
 

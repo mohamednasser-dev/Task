@@ -39,6 +39,9 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],'supervisor' => [
+            'driver' => 'session',
+            'provider' => 'supervisors',
         ],
     ],
 
@@ -63,6 +66,9 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],'supervisors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Supervisor::class,
         ],
 
         // 'users' => [
@@ -89,6 +95,11 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],'supervisors' => [
+            'provider' => 'supervisors',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

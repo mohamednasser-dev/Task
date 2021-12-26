@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Supervisor extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes ;
     protected $guarded = [];
 
     protected $hidden = [

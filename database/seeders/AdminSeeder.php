@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Supervisor;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -14,10 +15,12 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
+        $admin = Supervisor::create([
+            'name' => 'Ahmed',
+            'email' => 'super@gmail.com',
             'password' => '123456',
+            'phone' => '01201636129',
+            'image' => 'default.png',
         ]);
     }
 }

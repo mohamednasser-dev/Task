@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\SupervisorDataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,9 @@ class SupervisorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(SupervisorDataTable $dataTable)
     {
-        return view('admin.supervisor.index');
+        return $dataTable->render('admin.supervisor.index');
     }
 
     /**

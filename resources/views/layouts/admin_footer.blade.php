@@ -26,9 +26,12 @@
 <!-- All Jquery -->
 <!-- ============================================================== -->
 <script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
+<script type="text/javascript"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
 <script src="{{ asset('/assets/plugins/bootstrap/js/popper.min.js') }}"></script>
 <script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
+
 <!-- slimscrollbar scrollbar JavaScript -->
 <script src="{{ asset('js/perfect-scrollbar.jquery.min.js') }}"></script>
 <!--Wave Effects -->

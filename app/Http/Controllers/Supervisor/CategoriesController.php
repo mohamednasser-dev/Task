@@ -112,9 +112,11 @@ class CategoriesController extends Controller
     // multiple delete selected supervisores
 
     public function multiple_delete(Request $request){
-
-        $ids = $request->ids;
-        Category::whereIn('id',explode(",",$ids))->delete();
+        try {
+            Category::whereIn('id', $request->id)->delete();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed']);
+        }
         return response()->json(['message' => 'Success']);
     }
 

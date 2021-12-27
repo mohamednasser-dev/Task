@@ -1,4 +1,10 @@
 @extends('app')
+@section('styles')
+    <!--For icon picker -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+    <link rel="stylesheet" href="{{ asset('/iconPicker/dist/css/bootstrap-iconpicker.min.css') }}"/>
+@endsection
 @section('content')
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
@@ -101,8 +107,10 @@
     </div>
 @endsection
 @section('script')
-{{--    script for multi delete rows of superviso--}}
-
-
+    <!-- Bootstrap CDN For icon picker -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="{{ asset('/iconPicker/dist/js/bootstrap-iconpicker.bundle.min.js')}}"></script>
 @endsection
 

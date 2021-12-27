@@ -18,10 +18,6 @@
         </div>
     </div>
     <!-- ============================================================== -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- ============================================================== -->
-
-    <!-- ============================================================== -->
     <!-- Start Page Content -->
     <!-- ============================================================== -->
     <div class="row">
@@ -142,6 +138,7 @@
             $(".checkdelete:checked").each(function (index) {
                 dataList.push($(this).val())
             })
+            console.log(dataList);
             if (dataList.length > 0) {
                 swal({
                     title: "Are you sure to delete?",
@@ -153,7 +150,7 @@
                         if (willDelete) {
                             var CSRF_TOKEN = '{{ csrf_token() }}';
                             $.ajax({
-                                url: '{{route("categories.multiple_delete")}}',
+                                url: '{{route("categories.multiple.delete")}}',
                                 type: "post",
                                 data: {'id': dataList, _token: CSRF_TOKEN},
                                 dataType: "JSON",

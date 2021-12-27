@@ -42,8 +42,6 @@
                     <div class="form-group row">
                         <h3>main images</h3>
                         <div class="col-lg-12">
-                            <label for="recipient-name"
-                                   class="control-label">main image</label>
                             <input type="file" data-default-file="{{$data->image}}" name="image" id="input-file-now"
                                    class="dropify"/>
                         </div>
@@ -51,8 +49,6 @@
                     <div class="form-group row">
                         <h3>product images</h3>
                         <div class="col-lg-12">
-                            <label for="recipient-name"
-                                   class="control-label">product images</label>
                             <input type="file" name="images[]" id="input-file-now" class="dropify" multiple/>
                         </div>
                     </div>

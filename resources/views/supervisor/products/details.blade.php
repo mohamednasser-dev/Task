@@ -25,6 +25,7 @@
 
                             <img src="{{$data->image}}">
                             <br>
+                            <br>
                             @if($data->Images)
                                 @foreach($data->Images as $row)
                                     <img style="width: 100px" src="{{$row->image}}">

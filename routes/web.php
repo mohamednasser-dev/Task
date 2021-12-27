@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth:supervisor']], function() {
 
     //tasks by supervisor
     Route::resource('categories', CategoriesController::class);
-    Route::post('categories/multiple_delete', [CategoriesController::class,'multiple_delete'])->name('categories.multiple_delete');
+    Route::post('categories/multiple/delete', [CategoriesController::class,'multiple_delete'])->name('categories.multiple.delete');
     Route::get('/categories_trashed', [CategoriesController::class,'trash'])->name('categories.trashed');
     Route::get('categories/restore/one/{id}', [CategoriesController::class, 'restore'])->name('categories.restore');
     Route::get('categories/terminate/one/{id}', [CategoriesController::class, 'terminate'])->name('categories.terminate');

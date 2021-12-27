@@ -15,12 +15,10 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        $admin = Supervisor::create([
+        $admin = Admin::create([
             'name' => 'Ahmed',
             'email' => 'super@gmail.com',
-            'password' => '123456',
-            'phone' => '01201636129',
-            'image' => 'default.png',
+            'password' => '123456'
         ]);
     }
 }

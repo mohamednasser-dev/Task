@@ -11,7 +11,7 @@
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{route('supervisor.home')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Categories</li>
+                <li class="breadcrumb-item active">Products</li>
             </ol>
         </div>
     </div>
@@ -57,7 +57,7 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                     <a class='btn btn-raised btn-info btn-circle'
-                                       href="{{url('products/'.$row->id.'/edit')}}"
+                                       href="{{url('products/'.$row->slug.'/edit')}}"
                                        data-editid="{{$row->id}}" id="edit" title="update" alt="default">
                                         <i class="fa fa-edit"></i>
                                     </a>

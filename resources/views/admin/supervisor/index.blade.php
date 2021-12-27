@@ -47,8 +47,7 @@
                            class="tablesaw table-striped table-hover table-bordered table tablesaw-columntoggle">
                         <thead>
                         <tr>
-                            <th class="text-center" >
-                            </th>
+                            <th class="text-center">select</th>
                             <th class="text-center">avatar</th>
                             <th class="text-center">user name</th>
                             <th class="text-center">phone</th>

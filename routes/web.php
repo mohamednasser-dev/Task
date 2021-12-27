@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth:supervisor']], function() {
 
 
     Route::resource('products', ProductsController::class);
+    Route::get('products/delete_image/{id}', [ProductsController::class,'delete_image'])->name('product.image.delete');
+
 });
 
 require __DIR__.'/auth.php';

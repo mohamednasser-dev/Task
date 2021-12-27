@@ -75,7 +75,8 @@ class SupervisorsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Supervisor::findOrFail($id);
+        return view('admin.supervisor.edit',compact('data'));
     }
 
     /**
@@ -87,7 +88,17 @@ class SupervisorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $this->validate(\request(),
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email:rfc,dns|unique:supervisors,email,'.$id,
+                'password' => 'nullable|min:6|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|confirmed',
+                'phone' => 'required|unique:supervisors,phone,'.$id,
+                'image' => 'nullable|mimes:jpeg,jpg,png|max:10000' // max 10000kb
+            ]);
+        Supervisor::findOrFail($id)->update($data);
+        Alert::success('updated', 'supervisor updated successfully');
+        return redirect()->route('supervisors.index');
     }
 
     /**

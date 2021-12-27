@@ -73,7 +73,8 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Product::where('slug',$id)->first();
+        return view('supervisor.products.edit',compact('data'));
     }
 
     /**
@@ -85,7 +86,24 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $this->validate(\request(),
+            [
+                'name' => 'required|string|max:255',
+                'category_id' => 'required|exists:categories,id',
+                'description' => 'required|string',
+                'image' => 'nullable|mimes:jpeg,jpg,png|max:10000', // max 10000kb
+            ]);
+        $data['slug'] =  Str::slug($request->name);
+        $product = Product::findOrFail($id)->update($data);
+        if($request->images){
+            $image_data['product_id'] = $id;
+            foreach ($request->images as $row){
+                $image_data['image']  = $row;
+                Product_image::create($image_data);
+            }
+        }
+        Alert::success('updared', 'product updated successfully');
+        return redirect()->route('products.index');
     }
 
     /**
@@ -98,6 +116,13 @@ class ProductsController extends Controller
     {
         Product::findOrFail($id)->delete();
         Alert::success('deleted', 'supervisor deleted successfully');
+        return back();
+    }
+    //to delete image of other images in edit page
+    public function delete_image($id)
+    {
+        Product_image::findOrFail($id)->delete();
+        Alert::success('deleted', 'image deleted successfully');
         return back();
     }
 

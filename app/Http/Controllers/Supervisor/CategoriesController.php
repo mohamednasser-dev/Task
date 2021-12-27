@@ -43,7 +43,7 @@ class CategoriesController extends Controller
         //generate slug attribute ...
         $data['slug'] =  Str::slug($request->name);
         Category::create($data);
-        Alert::success('added', 'supervisor added successfully');
+        Alert::success('added', 'category added successfully');
         return back();
     }
 
@@ -66,7 +66,8 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Category::where('slug',$id)->first();
+        return view('supervisor.categories.edit',compact('data'));
     }
 
     /**
@@ -78,7 +79,22 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //this for if user enter edit page and not select icon ..to set default icon that inserted ...
+        $selected_cat = Category::findOrFail($id);
+        if($request->icon == null){
+
+            $request['icon'] =  $selected_cat->icon;
+        }
+        $data = $this->validate(\request(),
+            [
+                'name' => 'required|string|max:255',
+                'icon' => 'required|string|max:255',
+            ]);
+        //generate slug attribute ...
+        $data['slug'] =  Str::slug($request->name);
+        Category::findOrFail($id)->update($data);
+        Alert::success('updated', 'category updated successfully');
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -90,7 +106,7 @@ class CategoriesController extends Controller
     public function destroy($id)
     {
         Category::findOrFail($id)->delete();
-        Alert::success('deleted', 'supervisor deleted successfully');
+        Alert::success('deleted', 'category deleted successfully');
         return back();
     }
     // multiple delete selected supervisores

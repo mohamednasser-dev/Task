@@ -50,8 +50,7 @@
                            class="tablesaw table-striped table-hover table-bordered table tablesaw-columntoggle">
                         <thead>
                         <tr>
-                            <th class="text-center">
-                            </th>
+                            <th class="text-center">select</th>
                             <th class="text-center">icon</th>
                             <th class="text-center">name</th>
                             <th class="text-center">actions</th>
@@ -72,7 +71,7 @@
                                 <td class="text-center">{{$row->name}}</td>
                                 <td class="text-lg-center">
                                     <a class='btn btn-raised btn-info btn-circle'
-                                       href="{{url('categories/'.$row->id.'/edit')}}"
+                                       href="{{url('categories/'.$row->slug.'/edit')}}"
                                        data-editid="{{$row->id}}" id="edit" title="update" alt="default">
                                         <i class="fa fa-edit"></i>
                                     </a>

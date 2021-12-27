@@ -16,7 +16,7 @@ class SupervisorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(SupervisorDataTable $dataTable)
+    public function index()
     {
         $data = Supervisor::orderBy('created_at','desc')->paginate(10);
         return view('admin.supervisor.index',compact('data'));
@@ -100,5 +100,14 @@ class SupervisorsController extends Controller
         Supervisor::findOrFail($id)->delete();
         Alert::success('deleted', 'supervisor deleted successfully');
         return back();
+    }
+
+    public function multiple_delete(Request $request){
+
+        $ids = $request->ids;
+        Supervisor::whereIn('id',explode(",",$ids))->delete();
+        Alert::success('deleted', 'supervisors deleted successfully');
+        return back();
+//        return response()->json(['status'=>true,'message'=>"Category deleted successfully."]);
     }
 }

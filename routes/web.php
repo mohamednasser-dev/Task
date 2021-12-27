@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\SupervisorsController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Supervisor\SupervisorHomeController;
+use App\Http\Controllers\Supervisor\CategoriesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,13 +29,14 @@ Route::group(['middleware' => ['auth:web']], function() {
     //supervisor crud by admin tasks
     Route::resource('supervisors', SupervisorsController::class);
     Route::post('supervisors/change_status', [SupervisorsController::class,'change_status'])->name('supervisor.change_status');
+    Route::delete('supervisors/multiple_delete', [SupervisorsController::class,'multiple_delete'])->name('supervisor.multiple_delete');
 });
 
 //supervisor
 Route::group(['middleware' => ['auth:supervisor']], function() {
     Route::get('/supervisor/home', [SupervisorHomeController::class, 'index'])->name('supervisor.home');
     //supervisor crud by admin tasks
-//    Route::resource('supervisors', SupervisorHomeController::class);
+    Route::resource('categories', CategoriesController::class);
 //    Route::post('supervisors/change_status', [SupervisorHomeController::class,'change_status'])->name('supervisor.change_status');
 });
 

@@ -7,12 +7,13 @@
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
-                <li>
-                    <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-home"></i><span
-                            class="hide-menu">Dashboard</span></a>
-                </li>
-                <li class="nav-devider"></li>
+
                 @if(auth()->guard('web')->check())
+                    <li>
+                        <a class="waves-effect waves-dark" href="{{route('home')}}" aria-expanded="false"><i class="mdi mdi-home"></i><span
+                                class="hide-menu">Dashboard</span></a>
+                    </li>
+                    <li class="nav-devider"></li>
                     <li>
                         <a class="waves-effect waves-dark" href="{{route('supervisors.index')}}"
                            aria-expanded="false"><i class="mdi mdi-account"></i><span
@@ -20,7 +21,12 @@
                     </li>
                 @elseif(auth()->guard('supervisor')->check())
                     <li>
-                        <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i
+                        <a class="waves-effect waves-dark" href="{{route('supervisor.home')}}" aria-expanded="false"><i class="mdi mdi-home"></i><span
+                                class="hide-menu">Dashboard</span></a>
+                    </li>
+                    <li class="nav-devider"></li>
+                    <li>
+                        <a class="waves-effect waves-dark" href="{{route('categories.index')}}" aria-expanded="false"><i
                                 class="mdi mdi-widgets"></i><span class="hide-menu">categories</span></a>
                     </li>
                     <li>

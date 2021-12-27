@@ -6,12 +6,12 @@
 
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
-            <h3 class="text-themecolor">supervisors</h3>
+            <h3 class="text-themecolor">Categories</h3>
         </div>
         <div class="col-md-7 align-self-center">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a></li>
-                <li class="breadcrumb-item active">supervisors</li>
+                <li class="breadcrumb-item"><a href="{{route('supervisor.home')}}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Categories</li>
             </ol>
         </div>
     </div>
@@ -46,11 +46,8 @@
                                     <label for="check_all"></label>
                                 </div>
                             </th>
-                            <th class="text-center">avatar</th>
-                            <th class="text-center">user name</th>
-                            <th class="text-center">phone</th>
-                            <th class="text-center">email</th>
-                            <th class="text-center">Block / Unblock</th>
+                            <th class="text-center">icon</th>
+                            <th class="text-center">name</th>
                             <th class="text-center">actions</th>
                         </tr>
                         </thead>
@@ -63,27 +60,17 @@
                                         <label for="checkbox_{{$row->id}}"></label>
                                     </div>
                                 </td>
-                                <td class="text-center"><img src="{{$row->image}}" style="width: 100px;"></td>
+                                <td class="text-center"><i class="fa {{$row->icon}}"></i></td>
                                 <td class="text-center">{{$row->name}}</td>
-                                <td class="text-center">{{$row->phone}}</td>
-                                <td class="text-center">{{$row->email}}</td>
-                                <td class="text-center">
-                                    <div class="switch">
-                                        <label>
-                                            <input onchange="update_active(this)" value="{{ $row->id }}"
-                                                   type="checkbox" <?php if ($row->status == 'Unblock') echo "checked";?> >
-                                            <span class="lever switch-col-indigo"></span>
-                                        </label>
-                                    </div>
-                                </td>
+                                <td class="text-center">{{$row->slug}}</td>
                                 <td class="text-lg-center">
                                     <a class='btn btn-raised btn-success btn-circle'
-                                       href="{{url('supervisors/'.$row->id.'/edit')}}"
+                                       href="{{url('categories/'.$row->id.'/edit')}}"
                                        data-editid="{{$row->id}}" id="edit" title="update" alt="default">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <form method="post" id='delete-form-{{ $row->id }}'
-                                          action="{{ route('supervisors.destroy', ['supervisor' => $row->id]) }}"
+                                          action="{{ route('categories.destroy', ['category' => $row->id]) }}"
                                           style='display: none;'>
                                         {{csrf_field()}}
                                         {{ method_field('DELETE') }}
@@ -113,43 +100,29 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">add new supervisor</h4>
+                    <h4 class="modal-title">add new category</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ Form::open( ['route'  => ['supervisors.store'],'method'=>'post' , 'class'=>'form','files'=>true] ) }}
+                    {{ Form::open( ['route'  => ['categories.store'],'method'=>'post' , 'class'=>'form','files'=>true] ) }}
                     <div class="form-group">
                         <label for="recipient-name"
-                               class="control-label">user name</label>
+                               class="control-label">name</label>
                         {{ Form::text('name',null,["class"=>"form-control" ,"required"]) }}
                     </div>
                     <div class="form-group">
                         <label for="recipient-name"
-                               class="control-label">phone</label>
-                        {{ Form::number('phone',null,["class"=>"form-control" ,"required"]) }}
+                               class="control-label">slug</label>
+                        {{ Form::text('slug',null,["class"=>"form-control" ,"required"]) }}
                     </div>
-                    <div class="form-group">
-                        <label for="recipient-name"
-                               class="control-label">email</label>
-                        {{ Form::email('email',null,["class"=>"form-control" ,"required"]) }}
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" class="form-control" name="password" required>
-                        <div style="color: red;" class="form-control-feedback">password should contain numbers,alphabets
-                            and symbols
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">confirm password</label>
-                        <input type="password" class="form-control" name="password_confirmation" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name"
-                               class="control-label">avatar</label>
-                        <input type="file" required name="image" id="input-file-now" class="dropify"/>
-                    </div>
+                    <select name="icon" class="form-control bs-select" required>
+                        <option data-icon="fa fa-user">user</option>
+                        <option data-icon="fa-circle icon-warning">Gold</option>
+                        <option data-icon="fa-circle icon-default">Silver</option>
+                        <option data-icon="fa-circle-o" selected="selected">Free</option>
+                    </select>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">
@@ -163,72 +136,7 @@
     </div>
 @endsection
 @section('script')
-    <!-- jQuery file upload -->
-    <script src="{{ asset('/assets/plugins/dropify/dist/js/dropify.min.js')}}"></script>
-    <script>
-        $(document).ready(function () {
-            // Basic
-            $('.dropify').dropify();
 
-            // Translated
-            $('.dropify-fr').dropify({
-                messages: {
-                    default: 'Glissez-déposez un fichier ici ou cliquez',
-                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
-                    remove: 'Supprimer',
-                    error: 'Désolé, le fichier trop volumineux'
-                }
-            });
-
-            // Used events
-            var drEvent = $('#input-file-events').dropify();
-
-            drEvent.on('dropify.beforeClear', function (event, element) {
-                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-            });
-
-            drEvent.on('dropify.afterClear', function (event, element) {
-                alert('File deleted');
-            });
-
-            drEvent.on('dropify.errors', function (event, element) {
-                console.log('Has Errors');
-            });
-
-            var drDestroy = $('#input-file-to-destroy').dropify();
-            drDestroy = drDestroy.data('dropify')
-            $('#toggleDropify').on('click', function (e) {
-                e.preventDefault();
-                if (drDestroy.isDropified()) {
-                    drDestroy.destroy();
-                } else {
-                    drDestroy.init();
-                }
-            })
-        });
-    </script>
-{{--    script for change supervisor status [Block , unblock]--}}
-    <script type="text/javascript">
-        function update_active(el) {
-            if (el.checked) {
-                var status = 'Unblock';
-            } else {
-                var status = 'Block';
-            }
-            $.post('{{ route('supervisor.change_status') }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                status: status
-            }, function (data) {
-                if (data == 1) {
-                    console.log('daaa = '.data);
-                    toastr.success("status changed successfully");
-                } else {
-                    toastr.error("error hapend !");
-                }
-            });
-        }
-    </script>
 {{--    script for multi delete rows of superviso--}}
     <script type="text/javascript">
         $(document).ready(function () {

@@ -19,14 +19,8 @@ class SupervisorDataTableEditor extends DataTablesEditor
     public function createRules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|unique:supervisors,email|email:rfc,dns',
-            'password' => 'required|min:6|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|confirmed',
-            'phone' => 'required|unique:supervisors,phone',
-            'image' => 'required|mimes:jpeg,jpg,png|max:10000' // max 10000kb
-//
-//            'email' => 'required|email|unique:' . $this->resolveModel()->getTable(),
-//            'name'  => 'required',
+            'email' => 'required|email|unique:' . $this->resolveModel()->getTable(),
+            'name'  => 'required',
         ];
     }
 
@@ -56,9 +50,7 @@ class SupervisorDataTableEditor extends DataTablesEditor
     }
     public function creating(Model $model, array $data)
     {
-//        $data['password'] = bcrypt($data['password']);
-
-        return $data;
+        $data['password'] = bcrypt($data['password']);
     }
 
     /**
@@ -71,11 +63,9 @@ class SupervisorDataTableEditor extends DataTablesEditor
     {
         if (empty($data['password'])) {
             unset($data['password']);
+        } else {
+            $data['password'] = bcrypt($data['password']);
         }
-
-//        else {
-//            $data['password'] = bcrypt($data['password']);
-//        }
         return $data;
     }
 }

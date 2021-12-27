@@ -19,6 +19,16 @@ class Product extends Model
         return asset('public/uploads/products/default.jpg');
     }
 
+
+    public function Category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function Images()
+    {
+        return $this->hasMany('App\Models\Product_image','product_id','id');
+    }
     public function setImageAttribute($image)
     {
         if (is_file($image)) {

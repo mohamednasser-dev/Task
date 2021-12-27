@@ -14,7 +14,7 @@ class Product_image extends Model
     public function getImageAttribute($image)
     {
         if (!empty($image)) {
-            return asset('public/uploads/products') . '/' . $image;
+            return asset('public/uploads/product_images') . '/' . $image;
         }
         return asset('public/uploads/product_images/default.jpg');
     }

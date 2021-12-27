@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,10 +33,16 @@ class AuthenticatedSessionController extends Controller
         if (auth::guard('web')->attempt(['email' => Request('email'), 'password' => Request('password')], null)) {
             return redirect()->intended(RouteServiceProvider::HOME);
         }elseif (auth::guard('supervisor')->attempt(['email' => Request('email'), 'password' => Request('password')], null)){
+            if(auth::guard('supervisor')->user()->status == 'Block'){
+                auth::guard('supervisor')->logout();
+                Alert::warning('warning', 'you are Blocked , contact manager to unBlock your account..');
+                return redirect()->back();
+            }
             return redirect(route('supervisor.home'));
+        }else{
+            Alert::error('invalid', 'email or password is invalid');
+            return redirect()->back();
         }
-
-
        //system functions
 //        $request->authenticate();
 //        $request->session()->regenerate();

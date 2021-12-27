@@ -22,11 +22,12 @@ class SupervisorsController extends Controller
         return view('admin.supervisor.index',compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function trash()
+    {
+        $data = Supervisor::orderBy('created_at','desc')->onlyTrashed()->paginate(10);
+        return view('admin.supervisor.trash',compact('data'));
+    }
+
     public function change_status(Request $request)
     {
         Supervisor::findorFail($request->id)->update(['status'=>$request->status]);
@@ -102,12 +103,29 @@ class SupervisorsController extends Controller
         return back();
     }
 
+    // multiple delete selected supervisores
     public function multiple_delete(Request $request){
+        try {
+            Supervisor::whereIn('id', $request->id)->delete();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed']);
+        }
+        return response()->json(['message' => 'Success']);
+    }
 
-        $ids = $request->ids;
-        Supervisor::whereIn('id',explode(",",$ids))->delete();
-        Alert::success('deleted', 'supervisors deleted successfully');
+    //    to restore deleted record
+    public function restore($id)
+    {
+        Supervisor::withTrashed()->findOrFail($id)->restore();
+        Alert::success('restored', 'Supervisor restored successfully');
         return back();
-//        return response()->json(['status'=>true,'message'=>"Category deleted successfully."]);
+    }
+    //to final terminate record ...
+    public function terminate($id)
+    {
+        Supervisor::onlyTrashed()->findOrFail($id)->forceDelete();
+
+        Alert::success('terminated', 'Supervisor force deleted successfully');
+        return back();
     }
 }

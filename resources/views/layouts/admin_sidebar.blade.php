@@ -30,7 +30,7 @@
                                 class="mdi mdi-widgets"></i><span class="hide-menu">categories</span></a>
                     </li>
                     <li>
-                        <a class="waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-rocket"></i><span
+                        <a class="waves-effect waves-dark" href="{{route('products.index')}}" aria-expanded="false"><i class="mdi mdi-rocket"></i><span
                                 class="hide-menu">products</span></a>
                     </li>
                 @endif

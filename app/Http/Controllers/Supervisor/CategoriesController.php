@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Supervisor;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class CategoriesController extends Controller
@@ -19,6 +20,11 @@ class CategoriesController extends Controller
         $data = Category::orderBy('created_at','desc')->paginate(10);
         return view('supervisor.categories.index',compact('data'));
     }
+    public function trash()
+    {
+        $data = Category::orderBy('created_at','desc')->onlyTrashed()->paginate(10);
+        return view('supervisor.categories.trash',compact('data'));
+    }
 
 
     /**
@@ -32,9 +38,10 @@ class CategoriesController extends Controller
         $data = $this->validate(\request(),
             [
                 'name' => 'required|string|max:255',
-                'slug' => 'required|string|max:255',
                 'icon' => 'required|string|max:255',
             ]);
+        //generate slug attribute ...
+        $data['slug'] =  Str::slug($request->name);
         Category::create($data);
         Alert::success('added', 'supervisor added successfully');
         return back();
@@ -86,13 +93,28 @@ class CategoriesController extends Controller
         Alert::success('deleted', 'supervisor deleted successfully');
         return back();
     }
+    // multiple delete selected supervisores
 
     public function multiple_delete(Request $request){
 
         $ids = $request->ids;
         Category::whereIn('id',explode(",",$ids))->delete();
-        Alert::success('deleted', 'supervisors deleted successfully');
+        return response()->json(['message' => 'Success']);
+    }
+
+
+//    to restore deleted record
+    public function restore($id)
+    {
+        Category::withTrashed()->findOrFail($id)->restore();
+        Alert::success('restored', 'category restored successfully');
         return back();
-//        return response()->json(['status'=>true,'message'=>"Category deleted successfully."]);
+    }
+    //to final terminate record ...
+    public function terminate($id)
+    {
+        Category::onlyTrashed()->findOrFail($id)->forceDelete();
+        Alert::success('terminated', 'Category force deleted successfully');
+        return back();
     }
 }

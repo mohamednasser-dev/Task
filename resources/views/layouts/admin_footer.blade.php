@@ -46,6 +46,9 @@
 <!-- ============================================================== -->
 <script src="{{ asset('/assets/plugins/styleswitcher/jQuery.style.switcher.js') }}"></script>
 <script src="{{ asset('/js/jasny-bootstrap.js') }}"></script>
+
+<!-- Sweet-Alert  -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 @yield('script')
 @include('sweetalert::alert')
 </body>

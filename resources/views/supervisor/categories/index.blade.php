@@ -1,9 +1,11 @@
 @extends('app')
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('/assets/plugins/dropify/dist/css/dropify.min.css') }}">
+    <!--For icon picker -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+    <link rel="stylesheet" href="{{ asset('/iconPicker/dist/css/bootstrap-iconpicker.min.css') }}"/>
 @endsection
 @section('content')
-
     <div class="row page-titles">
         <div class="col-md-5 align-self-center">
             <h3 class="text-themecolor">Categories</h3>
@@ -26,6 +28,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+
                     <div class="card-title">
                         {{--for display modal to create new supervisor ...--}}
                         <button alt="default" data-toggle="modal" data-target="#create-modal"
@@ -33,18 +36,21 @@
                             <i class="fa fa-plus"></i>
                             add new
                         </button>
+                        <button id="delete" class="btn btn-warning btn-bg">
+                            <i class="fa fa-trash"></i>
+                            Delete selected
+                        </button>
+                        <a href="{{route('categories.trashed')}}" style="float: right;" class="btn btn-danger btn-bg">
+                            <i class="fa fa-trash"></i>
+                            Trash
+                        </a>
                     </div>
                     <br>
-                    <button style="margin: 5px;" class="btn btn-danger btn-xs delete-all" data-url="">Delete All</button>
                     <table id="example23"
                            class="tablesaw table-striped table-hover table-bordered table tablesaw-columntoggle">
                         <thead>
                         <tr>
-                            <th class="text-center" >
-                                <div class="demo-checkbox">
-                                    <input type="checkbox" id="check_all" class="filled-in">
-                                    <label for="check_all"></label>
-                                </div>
+                            <th class="text-center">
                             </th>
                             <th class="text-center">icon</th>
                             <th class="text-center">name</th>
@@ -56,15 +62,16 @@
                             <tr id="tr_{{$row->id}}">
                                 <td class="text-center">
                                     <div class="demo-checkbox">
-                                        <input data-id="{{$row->id}}" type="checkbox" id="checkbox_{{$row->id}}" class="filled-in">
+                                        <input name="deleteBox" data-id="{{$row->id}}" type="checkbox"
+                                               id="checkbox_{{$row->id}}" value="{{$row->id}}"
+                                               class="filled-in chk-col-amber checkdelete">
                                         <label for="checkbox_{{$row->id}}"></label>
                                     </div>
                                 </td>
-                                <td class="text-center"><i class="fa {{$row->icon}}"></i></td>
+                                <td class="text-center"><i class="{{$row->icon}}"></i></td>
                                 <td class="text-center">{{$row->name}}</td>
-                                <td class="text-center">{{$row->slug}}</td>
                                 <td class="text-lg-center">
-                                    <a class='btn btn-raised btn-success btn-circle'
+                                    <a class='btn btn-raised btn-info btn-circle'
                                        href="{{url('categories/'.$row->id.'/edit')}}"
                                        data-editid="{{$row->id}}" id="edit" title="update" alt="default">
                                         <i class="fa fa-edit"></i>
@@ -77,11 +84,11 @@
                                     </form>
                                     <button title="delete" onclick="
                                         if(confirm('are you should to delete ?')){
-                                            event.preventDefault();
-                                            document.getElementById('delete-form-{{ $row->id }}').submit();
+                                        event.preventDefault();
+                                        document.getElementById('delete-form-{{ $row->id }}').submit();
                                         }else {
-                                            event.preventDefault();
-                                        }" class='btn btn-danger btn-circle' href=" ">
+                                        event.preventDefault();
+                                        }" class='btn btn-warning btn-circle' href=" ">
                                         <i class="fa fa-trash" aria-hidden='true'></i>
                                     </button>
                                 </td>
@@ -113,16 +120,9 @@
                     </div>
                     <div class="form-group">
                         <label for="recipient-name"
-                               class="control-label">slug</label>
-                        {{ Form::text('slug',null,["class"=>"form-control" ,"required"]) }}
+                               class="control-label">icon</label>
+                        <div role="iconpicker" name="icon"></div>
                     </div>
-                    <select name="icon" class="form-control bs-select" required>
-                        <option data-icon="fa fa-user">user</option>
-                        <option data-icon="fa-circle icon-warning">Gold</option>
-                        <option data-icon="fa-circle icon-default">Silver</option>
-                        <option data-icon="fa-circle-o" selected="selected">Free</option>
-                    </select>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">
@@ -136,65 +136,57 @@
     </div>
 @endsection
 @section('script')
-
-{{--    script for multi delete rows of superviso--}}
+    {{--    script for multi delete rows of superviso--}}
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#check_all').on('click', function(e) {
-                if($(this).is(':checked',true))
-                {
-                    $(".checkbox").prop('checked', true);
-                } else {
-                    $(".checkbox").prop('checked',false);
-                }
-            });
-            $('.checkbox').on('click',function(){
-                if($('.checkbox:checked').length == $('.checkbox').length){
-                    $('#check_all').prop('checked',true);
-                }else{
-                    $('#check_all').prop('checked',false);
-                }
-            });
-            $('.delete-all').on('click', function(e) {
-                var idsArr = [];
-                $(".checkbox:checked").each(function() {
-                    idsArr.push($(this).attr('data-id'));
-                });
-                if(idsArr.length <=0)
-                {
-                    alert("Please select at least one record to delete.");
-                }  else {
-                    if(confirm("Are you sure, you want to delete the selected supervisors?")){
-                        var strIds = idsArr.join(",");
-                        $.ajax({
-                            url: "{{ route('supervisor.multiple_delete') }}",
-                            type: 'DELETE',
-                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                            data: 'ids='+strIds,
-                            success: function (data) {
-                                if (data['status']==true) {
-                                    $(".checkbox:checked").each(function() {
-                                        $(this).parents("tr").remove();
-                                    });
-                                    alert(data['message']);
-                                } else {
-                                    alert('Whoops Something went wrong!!');
+        $("#delete").on("click", function () {
+            var dataList = [];
+            $(".checkdelete:checked").each(function (index) {
+                dataList.push($(this).val())
+            })
+            if (dataList.length > 0) {
+                swal({
+                    title: "Are you sure to delete?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            var CSRF_TOKEN = '{{ csrf_token() }}';
+                            $.ajax({
+                                url: '{{route("categories.multiple_delete")}}',
+                                type: "post",
+                                data: {'id': dataList, _token: CSRF_TOKEN},
+                                dataType: "JSON",
+                                success: function (data) {
+                                    if (data.message == "Success") {
+                                        //success response ..
+                                        //to remove selected row
+                                        $('input[name="deleteBox"]:checkbox:checked').parents("tr").remove();
+                                        swal("your selected categories has been deleted successfully!", {
+                                            icon: "success",
+                                        });
+                                        // location.reload();
+                                    } else {
+                                        swal("something wrong!");
+                                    }
+                                },
+                                fail: function (xhrerrorThrown) {
+                                    swal("something wrong!");
                                 }
-                            },
-                            error: function (data) {
-                                alert(data.responseText);
-                            }
-                        });
-                    }
-                }
-            });
-            $('[data-toggle=confirmation]').confirmation({
-                rootSelector: '[data-toggle=confirmation]',
-                onConfirm: function (event, element) {
-                    element.closest('form').submit();
-                }
-            });
+                            });
+                        } else {
+                            swal("something wrong!");
+                        }
+                    });
+            }
         });
     </script>
+
+    <!-- Bootstrap CDN For icon picker -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="{{ asset('/iconPicker/dist/js/bootstrap-iconpicker.bundle.min.js')}}"></script>
 @endsection
 

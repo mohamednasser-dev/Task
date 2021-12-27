@@ -33,18 +33,21 @@
                             <i class="fa fa-plus"></i>
                             add new
                         </button>
+                        <button id="delete" class="btn btn-warning btn-bg">
+                            <i class="fa fa-trash"></i>
+                            Delete selected
+                        </button>
+                        <a href="{{route('supervisors.trashed')}}"  style="float: right;" class="btn btn-danger btn-bg">
+                            <i class="fa fa-trash"></i>
+                            Trash
+                        </a>
                     </div>
                     <br>
-                    <button style="margin: 5px;" class="btn btn-danger btn-xs delete-all" data-url="">Delete All</button>
                     <table id="example23"
                            class="tablesaw table-striped table-hover table-bordered table tablesaw-columntoggle">
                         <thead>
                         <tr>
                             <th class="text-center" >
-                                <div class="demo-checkbox">
-                                    <input type="checkbox" id="check_all" class="filled-in">
-                                    <label for="check_all"></label>
-                                </div>
                             </th>
                             <th class="text-center">avatar</th>
                             <th class="text-center">user name</th>
@@ -59,7 +62,7 @@
                             <tr id="tr_{{$row->id}}">
                                 <td class="text-center">
                                     <div class="demo-checkbox">
-                                        <input data-id="{{$row->id}}" type="checkbox" id="checkbox_{{$row->id}}" class="filled-in">
+                                        <input name="deleteBox" data-id="{{$row->id}}" type="checkbox" id="checkbox_{{$row->id}}" value="{{$row->id}}" class="filled-in chk-col-amber checkdelete">
                                         <label for="checkbox_{{$row->id}}"></label>
                                     </div>
                                 </td>
@@ -71,13 +74,13 @@
                                     <div class="switch">
                                         <label>
                                             <input onchange="update_active(this)" value="{{ $row->id }}"
-                                                   type="checkbox" <?php if ($row->status == 'Unblock') echo "checked";?> >
+                                                   type="checkbox"  @if($row->status == 'Unblock')  checked @endif >
                                             <span class="lever switch-col-indigo"></span>
                                         </label>
                                     </div>
                                 </td>
                                 <td class="text-lg-center">
-                                    <a class='btn btn-raised btn-success btn-circle'
+                                    <a class='btn btn-raised btn-info btn-circle'
                                        href="{{url('supervisors/'.$row->id.'/edit')}}"
                                        data-editid="{{$row->id}}" id="edit" title="update" alt="default">
                                         <i class="fa fa-edit"></i>
@@ -94,7 +97,7 @@
                                             document.getElementById('delete-form-{{ $row->id }}').submit();
                                         }else {
                                             event.preventDefault();
-                                        }" class='btn btn-danger btn-circle' href=" ">
+                                        }" class='btn btn-warning btn-circle' href=" ">
                                         <i class="fa fa-trash" aria-hidden='true'></i>
                                     </button>
                                 </td>
@@ -230,63 +233,49 @@
         }
     </script>
 {{--    script for multi delete rows of superviso--}}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#check_all').on('click', function(e) {
-                if($(this).is(':checked',true))
-                {
-                    $(".checkbox").prop('checked', true);
-                } else {
-                    $(".checkbox").prop('checked',false);
-                }
-            });
-            $('.checkbox').on('click',function(){
-                if($('.checkbox:checked').length == $('.checkbox').length){
-                    $('#check_all').prop('checked',true);
-                }else{
-                    $('#check_all').prop('checked',false);
-                }
-            });
-            $('.delete-all').on('click', function(e) {
-                var idsArr = [];
-                $(".checkbox:checked").each(function() {
-                    idsArr.push($(this).attr('data-id'));
-                });
-                if(idsArr.length <=0)
-                {
-                    alert("Please select at least one record to delete.");
-                }  else {
-                    if(confirm("Are you sure, you want to delete the selected supervisors?")){
-                        var strIds = idsArr.join(",");
-                        $.ajax({
-                            url: "{{ route('supervisor.multiple_delete') }}",
-                            type: 'DELETE',
-                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                            data: 'ids='+strIds,
-                            success: function (data) {
-                                if (data['status']==true) {
-                                    $(".checkbox:checked").each(function() {
-                                        $(this).parents("tr").remove();
-                                    });
-                                    alert(data['message']);
-                                } else {
-                                    alert('Whoops Something went wrong!!');
-                                }
-                            },
-                            error: function (data) {
-                                alert(data.responseText);
-                            }
-                        });
+   <script type="text/javascript">
+    $("#delete").on("click", function () {
+        var dataList = [];
+        $(".checkdelete:checked").each(function (index) {
+            dataList.push($(this).val())
+        })
+        if (dataList.length > 0) {
+            swal({
+              title: "Are you sure to delete?",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                var CSRF_TOKEN ='{{ csrf_token() }}';
+                $.ajax({
+                    url: '{{route("supervisor.multiple_delete")}}',
+                    type: "post",
+                    data: {'id': dataList, _token: CSRF_TOKEN},
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data.message == "Success") {
+                            //success response ..
+                            //to remove selected row
+                            $('input[name="deleteBox"]:checkbox:checked').parents("tr").remove();
+                            swal("your selected supervisors has been deleted successfully!", {
+                              icon: "success",
+                            });
+                            // location.reload();
+                        } else {
+                            swal("something wrong!");
+                        }
+                    },
+                    fail: function (xhrerrorThrown) {
+                        swal("something wrong!");
                     }
-                }
+                });
+              } else {
+                swal("something wrong!");
+              }
             });
-            $('[data-toggle=confirmation]').confirmation({
-                rootSelector: '[data-toggle=confirmation]',
-                onConfirm: function (event, element) {
-                    element.closest('form').submit();
-                }
-            });
-        });
+        }
+    });
     </script>
 @endsection
-

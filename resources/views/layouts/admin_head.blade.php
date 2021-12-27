@@ -13,6 +13,8 @@
     <title>Task</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('/assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+<!-- for sweetalert -->
+    <link href="{{ asset('/assets/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet" type="text/css">
     <!-- Custom CSS -->
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
     <!-- You can change the theme colors from here -->
